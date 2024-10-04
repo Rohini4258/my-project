@@ -24,7 +24,7 @@ jobs:
         run: |
           cd src/ProjectTwo
           dotnet build --configuration Release
-          dotnet publish --configuration Release --output ../../artifacts/ProjectTwo
+          dotnet publish --configuration Release --output ../../artifacts/projectTwo
 
       - name: Generate Timestamp
         id: timestamp
@@ -32,11 +32,11 @@ jobs:
 
       - name: Versioned Build Artifacts
         run: |
-          mv ../../artifacts/ProjectTwo ../../artifacts/ProjectTwo-${{ env.TIMESTAMP }}
+          mv ../../artifacts/projectTwo ../../artifacts/projectTwo-${{ env.TIMESTAMP }}
 
-      - name: Install JFrog CLI
-        run: curl -fL https://getcli.jfrog.io | sh
+      # - name: Install JFrog CLI
+      #   run: curl -fL https://getcli.jfrog.io | sh
 
-      - name: Upload to JFrog
-        run: |
-          ./jfrog rt upload "artifacts/ProjectTwo-${{ env.TIMESTAMP }}/*" "my-repo/path/to/store/artifacts/"
+      # - name: Upload to JFrog
+      #   run: |
+      #     ./jfrog rt upload "artifacts/ProjectTwo-${{ env.TIMESTAMP }}/*" "my-repo/path/to/store/artifacts/"
