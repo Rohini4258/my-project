@@ -38,9 +38,10 @@ jobs:
 
       - name: Upload Artifacts to JFrog
         run: |
-          curl -u ${{ secrets.JFROG_USERNAME }}:${{ secrets.JFROG_API_KEY }} \
+          curl -u "${{ secrets.JFROG_USERNAME }}:${{ secrets.JFROG_API_KEY }}" \
           -T ../../artifacts/${{ inputs.project }}/${{ inputs.project }}-${{ env.timestamp }}.dll \
-          ${{ secrets.JFROG_URL }}/artifactory/${{ inputs.project }}-artifacts-gen/${{ inputs.project }}-${{ env.timestamp }}.dll
+          "${{ secrets.JFROG_URL }}/artifactory/${{ inputs.project }}-artifacts-gen/${{ inputs.project }}-${{ env.timestamp }}.dll"
+
 
       - name: List Artifacts
         run: |
