@@ -1,3 +1,4 @@
+# .github/workflows/build.yml
 name: Build Projects
 
 on:
@@ -27,10 +28,6 @@ jobs:
 
       - name: Publish Artifacts
         run: |
+          timestamp=$(date +'%Y%m%d%H%M%S') # Generate timestamp
           mkdir -p ../../artifacts/${{ inputs.project }}
-          cp src/${{ inputs.project }}/bin/Release/net8.0/*.dll ../../artifacts/${{ inputs.project }}/
-
-      - name: List Artifacts
-        run: |
-          echo "Listing Artifacts for ${{ inputs.project }}:"
-          ls -la ../../artifacts/${{ inputs.project }}/
+          cp src/${{ inputs.project }}/bin/Release/net8.0/*.dll ../../artifacts/${{ inputs.project }}/${{ inputs.project }}-$timestamp.dll
