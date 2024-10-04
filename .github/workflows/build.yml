@@ -1,49 +1,50 @@
-name: Build and Upload Projects to JFrog
+name: Build and Deploy Projects to JFrog
 
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '6.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: Set Timestamp
-      id: build
-      run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+      - name: Build Project
+        run: |
+          cd src/${{ inputs.project }}
+          dotnet build --configuration Release
 
-    # ProjectOne build
-    - name: Build ProjectOne
-      run: dotnet build src/ProjectOne/ProjectOne.csproj --configuration Release
-      id: build-one
+      - name: Version Artifacts
+        id: versioning
+        run: |
+          timestamp=$(date +'%Y%m%d%H%M%S')
+          echo "timestamp=$timestamp" >> $GITHUB_ENV
 
-    # ProjectTwo build
-    - name: Build ProjectTwo
-      run: dotnet build src/ProjectTwo/ProjectTwo.csproj --configuration Release
-      id: build-two
+      - name: Publish Artifacts Locally
+        run: |
+          mkdir -p ../../artifacts/${{ inputs.project }}
+          cp src/${{ inputs.project }}/bin/Release/net8.0/*.dll ../../artifacts/${{ inputs.project }}/${{ inputs.project }}-${{ env.timestamp }}.dll
 
-    # Upload ProjectOne Artifacts to JFrog
-    - name: Upload ProjectOne Artifacts to JFrog
-      run: |
-        curl -u "${{ secrets.JFROG_USERNAME }}:${{ secrets.JFROG_API_KEY }}" \
-        -T src/ProjectOne/bin/Release/net6.0/ProjectOne.dll \
-        "https://rohini4258.jfrog.io/artifactory/api/generic/projectone-artifacts-generic-local/ProjectOne-${{ env.timestamp }}.dll"
-      shell: /usr/bin/bash -e {0}
+      - name: List Artifacts
+        run: |
+          echo "Listing Artifacts for ${{ inputs.project }}:"
+          ls -la ../../artifacts/${{ inputs.project }}
 
-    # Upload ProjectTwo Artifacts to JFrog
-    - name: Upload ProjectTwo Artifacts to JFrog
-      run: |
-        curl -u "${{ secrets.JFROG_USERNAME }}:${{ secrets.JFROG_API_KEY }}" \
-        -T src/ProjectTwo/bin/Release/net6.0/ProjectTwo.dll \
-        "https://rohini4258.jfrog.io/artifactory/api/generic/projecttwo-artifacts-generic-local/ProjectTwo-${{ env.timestamp }}.dll"
-      shell: /usr/bin/bash -e {0}
+      # Upload to JFrog Repository
+      - name: Upload Artifacts to JFrog
+        run: |
+          curl -u "${{ secrets.JFROG_USERNAME }}:${{ secrets.JFROG_API_KEY }}" \
+          -T ../../artifacts/${{ inputs.project }}/${{ inputs.project }}-${{ env.timestamp }}.dll \
+          "https://rohini4258.jfrog.io/artifactory/api/generic/${{ inputs.project }}-artifacts-generic-local/${{ inputs.project }}-${{ env.timestamp }}.dll"
+        shell: /usr/bin/bash -e {0}
