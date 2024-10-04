@@ -1,53 +1,13 @@
-name: Build Project One
+# .github/workflows/projectOne-build.yml
+name: Project One Build
 
 on:
-  workflow_call: # This allows this workflow to be called from another workflow
+  push:
+    branches:
+      - master  # Change as needed
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Create Artifacts Directory
-        run: |
-          mkdir -p ../../artifacts
-
-      - name: Build and Publish Project One
-        run: |
-          cd src/ProjectOne
-          dotnet publish --configuration Release --output ../../artifacts/ProjectOne
-
-      - name: List Artifacts Directory
-        run: |
-          ls -la ../../artifacts/
-
-      - name: Generate Timestamp
-        id: timestamp
-        run: echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-
-      - name: Versioned Build Artifacts
-        run: |
-          if [ -d "../../artifacts/ProjectOne" ]; then
-            mv ../../artifacts/ProjectOne ../../artifacts/ProjectOne-${{ env.TIMESTAMP }}
-          else
-            echo "Artifact directory does not exist. Check your publish step."
-            exit 1
-          fi
-
-      # - name: Install JFrog CLI
-      #   run: |
-      #     curl -fL https://getcli.jfrog.io | sh
-      #     chmod +x jfrog
-      #     sudo mv jfrog /usr/local/bin/
-
-      # - name: Configure JFrog CLI
-      #   run: |
-      #     jfrog rt c my-jfrog-server --url=https://your-jfrog-instance.jfrog.io --user=${{ secrets.JFROG_USER }} --password=${{ secrets.JFROG_PASSWORD }}
-
-      # - name: Upload to JFrog
-      #   run: |
-      #     jfrog rt upload "artifacts/ProjectOne-${{ env.TIMESTAMP }}/*" "my-repo/path/to/store/artifacts/"
+    uses: ./.github/workflows/build.yml
+    with:
+      project: 'ProjectOne'

@@ -1,22 +1,38 @@
-name: Main Build Workflow
+# .github/workflows/build.yml
+name: Build Projects
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build Project One
-        uses: ./.github/workflows/projectOne-build.yml
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0.x'
 
-      - name: Build Project Two
-        uses: ./.github/workflows/projectTwo-build.yml
+      - name: Build Project
+        run: |
+          cd src/ProjectOne
+          dotnet build --configuration Release
+          cd ../../
+          cd src/ProjectTwo
+          dotnet build --configuration Release
+
+      - name: Publish Artifacts
+        run: |
+          mkdir -p ../../artifacts/ProjectOne
+          cp src/ProjectOne/bin/Release/net8.0/*.dll ../../artifacts/ProjectOne/
+          
+          mkdir -p ../../artifacts/ProjectTwo
+          cp src/ProjectTwo/bin/Release/net8.0/*.dll ../../artifacts/ProjectTwo/
