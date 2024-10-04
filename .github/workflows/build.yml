@@ -1,4 +1,3 @@
-# .github/workflows/build.yml
 name: Build Projects
 
 on:
@@ -23,23 +22,15 @@ jobs:
 
       - name: Build Project
         run: |
-          cd src/ProjectOne
-          dotnet build --configuration Release
-          cd ../../
-          cd src/ProjectTwo
+          cd src/${{ inputs.project }}
           dotnet build --configuration Release
 
       - name: Publish Artifacts
         run: |
-          mkdir -p ../../artifacts/ProjectOne
-          cp src/ProjectOne/bin/Release/net8.0/*.dll ../../artifacts/ProjectOne/
-          
-          mkdir -p ../../artifacts/ProjectTwo
-          cp src/ProjectTwo/bin/Release/net8.0/*.dll ../../artifacts/ProjectTwo/
+          mkdir -p ../../artifacts/${{ inputs.project }}
+          cp src/${{ inputs.project }}/bin/Release/net8.0/*.dll ../../artifacts/${{ inputs.project }}/
 
       - name: List Artifacts
         run: |
-          echo "Listing Artifacts for Project One:"
-          ls -la ../../artifacts/ProjectOne/
-          echo "Listing Artifacts for Project Two:"
-          ls -la ../../artifacts/ProjectTwo/
+          echo "Listing Artifacts for ${{ inputs.project }}:"
+          ls -la ../../artifacts/${{ inputs.project }}/
