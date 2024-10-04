@@ -22,7 +22,7 @@ jobs:
 
       - name: Build Project One
         run: |
-          cd src/projectOne
+          cd src/ProjectOne
           dotnet build --configuration Release
           dotnet publish --configuration Release --output ../artifacts/projectOne
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: Build Project Two
         run: |
-          cd src/projectTwo
+          cd src/ProjectTwo
           dotnet build --configuration Release
           dotnet publish --configuration Release --output ../artifacts/projectTwo
 
