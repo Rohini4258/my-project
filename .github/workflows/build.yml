@@ -44,11 +44,13 @@ jobs:
       # Upload to JFrog Repository using the correct secrets
       - name: Upload Artifacts to JFrog
         run: |
+          
           set -x # Enables tracing for debugging
-          echo "Uploading artifact for project: ${{ inputs.project }} with timestamp: ${{ env.timestamp }}"
+          project: ${{ inputs.project }}
+          echo "Uploading artifact for ${project} with timestamp: ${{ env.timestamp }}"
           curl -u "${{ secrets.JFROG_USERNAME }}:${{ secrets.JFROG_API_KEY }}" \
           -v \
           -T "../../artifacts/${{ inputs.project }}/${{ inputs.project }}-${{ env.timestamp }}.dll" \
-          "https://rohini4258.jfrog.io/artifactory/api/generic/${{ inputs.project }}-artifacts-generic-local/${{ inputs.project }}-${{ env.timestamp }}.dll"
+          "https://rohini4258.jfrog.io/artifactory/api/generic/${project}-artifacts-generic-local/${project}-${{ env.timestamp }}.dll"
         shell: /usr/bin/bash -e {0}
 
