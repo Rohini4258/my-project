@@ -41,7 +41,7 @@ jobs:
           echo "Listing Artifacts for ${{ inputs.project }}:"
           ls -la ../../artifacts/${{ inputs.project }}
 
-      # Upload to JFrog Repository
+      # Upload to JFrog Repository using the correct secrets
       - name: Upload Artifacts to JFrog
         run: |
           curl -u "${{ secrets.JFROG_USERNAME }}:${{ secrets.JFROG_API_KEY }}" \
