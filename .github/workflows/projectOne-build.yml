@@ -1,0 +1,42 @@
+name: Build Project One
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Build and Publish Project One
+        run: |
+          cd src/ProjectOne
+          dotnet build --configuration Release
+          dotnet publish --configuration Release --output ../../artifacts/ProjectOne
+
+      - name: Generate Timestamp
+        id: timestamp
+        run: echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
+      - name: Versioned Build Artifacts
+        run: |
+          mv ../../artifacts/ProjectOne ../../artifacts/ProjectOne-${{ env.TIMESTAMP }}
+
+      - name: Install JFrog CLI
+        run: curl -fL https://getcli.jfrog.io | sh
+
+      - name: Upload to JFrog
+        run: |
+          ./jfrog rt upload "artifacts/ProjectOne-${{ env.TIMESTAMP }}/*" "my-repo/path/to/store/artifacts/"

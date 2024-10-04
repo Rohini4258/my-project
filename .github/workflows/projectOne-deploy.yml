@@ -1,0 +1,22 @@
+name: Deploy Project One
+
+on:
+  workflow_run:
+    workflows: ["Project One Build"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy Project One to AKS
+        run: |
+          echo "Deploying Project One..."
+          # Add Azure CLI commands here to deploy to AKS
+          # For example:
+          # az aks get-credentials --resource-group <resource-group> --name <aks-cluster-name>
+          # kubectl apply -f path/to/ProjectOne/deployment.yaml

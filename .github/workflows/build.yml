@@ -1,0 +1,45 @@
+name: Build All Projects
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-project-one:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x' # Change to your required .NET version
+
+      - name: Build Project One
+        run: |
+          cd src/ProjectOne
+          dotnet build --configuration Release
+          dotnet publish --configuration Release --output ../artifacts/ProjectOne
+
+  build-project-two:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x' # Change to your required .NET version
+
+      - name: Build Project Two
+        run: |
+          cd src/ProjectTwo
+          dotnet build --configuration Release
+          dotnet publish --configuration Release --output ../artifacts/ProjectTwo
+
