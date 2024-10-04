@@ -36,3 +36,10 @@ jobs:
           
           mkdir -p ../../artifacts/ProjectTwo
           cp src/ProjectTwo/bin/Release/net8.0/*.dll ../../artifacts/ProjectTwo/
+
+      - name: List Artifacts
+        run: |
+          echo "Listing Artifacts for Project One:"
+          ls -la ../../artifacts/ProjectOne/
+          echo "Listing Artifacts for Project Two:"
+          ls -la ../../artifacts/ProjectTwo/
