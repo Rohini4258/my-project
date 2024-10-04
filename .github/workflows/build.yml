@@ -1,4 +1,4 @@
-name: Build All Projects
+name: Main Build Workflow
 
 on:
   push:
@@ -9,37 +9,14 @@ on:
       - master
 
 jobs:
-  build-project-one:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '8.0.x' # Change to your required .NET version
 
       - name: Build Project One
-        run: |
-          cd src/ProjectOne
-          dotnet build --configuration Release
-          dotnet publish --configuration Release --output ../artifacts/projectOne
-
-  build-project-two:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '8.0.x' # Change to your required .NET version
+        uses: ./.github/workflows/projectOne-build.yml
 
       - name: Build Project Two
-        run: |
-          cd src/ProjectTwo
-          dotnet build --configuration Release
-          dotnet publish --configuration Release --output ../artifacts/projectTwo
-
+        uses: ./.github/workflows/projectTwo-build.yml
