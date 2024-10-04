@@ -25,6 +25,10 @@ jobs:
           cd src/ProjectTwo
           dotnet build --configuration Release
           dotnet publish --configuration Release --output ../../artifacts/ProjectTwo
+      
+      - name: List Artifacts Directory
+        run: |
+          ls -la ../../artifacts/
 
       - name: Generate Timestamp
         id: timestamp

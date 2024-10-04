@@ -26,6 +26,10 @@ jobs:
           dotnet build --configuration Release
           dotnet publish --configuration Release --output ../../artifacts/ProjectOne
 
+      - name: List Artifacts Directory
+        run: |
+          ls -la ../../artifacts/
+
       - name: Generate Timestamp
         id: timestamp
         run: echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
