@@ -1,4 +1,3 @@
-# .github/workflows/build.yml
 name: Build Projects
 
 on:
@@ -26,16 +25,22 @@ jobs:
           cd src/${{ inputs.project }}
           dotnet build --configuration Release
 
-      - name: Generate Versioned Artifact Name
+      - name: Version Artifacts
         id: versioning
         run: |
-          timestamp=$(date +'%Y%m%d%H%M%S') # Generate timestamp
-          echo "artifact_name=${{ inputs.project }}-$timestamp.dll" >> $GITHUB_ENV
+          timestamp=$(date +'%Y%m%d%H%M%S')
+          echo "timestamp=$timestamp" >> $GITHUB_ENV
 
-      - name: Publish Artifacts
+      - name: Publish Artifacts Locally
         run: |
           mkdir -p ../../artifacts/${{ inputs.project }}
-          cp src/${{ inputs.project }}/bin/Release/net8.0/*.dll ../../artifacts/${{ inputs.project }}/${{ env.artifact_name }}
+          cp src/${{ inputs.project }}/bin/Release/net8.0/*.dll ../../artifacts/${{ inputs.project }}/${{ inputs.project }}-${{ env.timestamp }}.dll
+
+      - name: Upload Artifacts to JFrog
+        run: |
+          curl -u ${{ secrets.JFROG_USERNAME }}:${{ secrets.JFROG_API_KEY }} \
+          -T ../../artifacts/${{ inputs.project }}/${{ inputs.project }}-${{ env.timestamp }}.dll \
+          ${{ secrets.JFROG_URL }}/artifactory/${{ inputs.project }}-artifacts-gen/${{ inputs.project }}-${{ env.timestamp }}.dll
 
       - name: List Artifacts
         run: |
