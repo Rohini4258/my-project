@@ -20,10 +20,13 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Create Artifacts Directory
+        run: |
+          mkdir -p ../../artifacts
+
       - name: Build and Publish Project One
         run: |
           cd src/ProjectOne
-          dotnet build --configuration Release
           dotnet publish --configuration Release --output ../../artifacts/ProjectOne
 
       - name: List Artifacts Directory
@@ -36,11 +39,23 @@ jobs:
 
       - name: Versioned Build Artifacts
         run: |
-          mv ../../artifacts/ProjectOne ../../artifacts/ProjectOne-${{ env.TIMESTAMP }}
+          if [ -d "../../artifacts/ProjectOne" ]; then
+            mv ../../artifacts/ProjectOne ../../artifacts/ProjectOne-${{ env.TIMESTAMP }}
+          else
+            echo "Artifact directory does not exist. Check your publish step."
+            exit 1
+          fi
 
       # - name: Install JFrog CLI
-      #   run: curl -fL https://getcli.jfrog.io | sh
+      #   run: |
+      #     curl -fL https://getcli.jfrog.io | sh
+      #     chmod +x jfrog
+      #     sudo mv jfrog /usr/local/bin/
+
+      # - name: Configure JFrog CLI
+      #   run: |
+      #     jfrog rt c my-jfrog-server --url=https://your-jfrog-instance.jfrog.io --user=${{ secrets.JFROG_USER }} --password=${{ secrets.JFROG_PASSWORD }}
 
       # - name: Upload to JFrog
       #   run: |
-      #     ./jfrog rt upload "artifacts/ProjectOne-${{ env.TIMESTAMP }}/*" "my-repo/path/to/store/artifacts/"
+      #     jfrog rt upload "artifacts/ProjectOne-${{ env.TIMESTAMP }}/*" "my-repo/path/to/store/artifacts/"
