@@ -26,11 +26,16 @@ jobs:
           cd src/${{ inputs.project }}
           dotnet build --configuration Release
 
-      - name: Publish Artifacts
+      - name: Generate Versioned Artifact Name
+        id: versioning
         run: |
           timestamp=$(date +'%Y%m%d%H%M%S') # Generate timestamp
+          echo "artifact_name=${{ inputs.project }}-$timestamp.dll" >> $GITHUB_ENV
+
+      - name: Publish Artifacts
+        run: |
           mkdir -p ../../artifacts/${{ inputs.project }}
-          cp src/${{ inputs.project }}/bin/Release/net8.0/*.dll ../../artifacts/${{ inputs.project }}/${{ inputs.project }}-$timestamp.dll
+          cp src/${{ inputs.project }}/bin/Release/net8.0/*.dll ../../artifacts/${{ inputs.project }}/${{ env.artifact_name }}
 
       - name: List Artifacts
         run: |
