@@ -39,13 +39,11 @@ jobs:
       - name: Upload Artifacts to JFrog
         run: |
           curl -u "${{ secrets.JFROG_USERNAME }}:${{ secrets.JFROG_API_KEY }}" \
-          -T ../../artifacts/ProjectOne/ProjectOne-${{ env.timestamp }}.dll \
-          "${{ secrets.JFROG_URL }}/artifactory/ProjectOne-artifacts-gen/ProjectOne-${{ env.timestamp }}.dll"
-
-
+          -T ../../artifacts/${{ inputs.project }}/${{ inputs.project }}-${{ env.timestamp }}.dll \
+          "${{ secrets.JFROG_URL }}/artifactory/${{ inputs.project }}-artifacts-gen/${{ inputs.project }}-${{ env.timestamp }}.dll"
+        shell: /usr/bin/bash -e {0}
 
       - name: List Artifacts
         run: |
           echo "Listing Artifacts for ${{ inputs.project }}:"
-          ls -la ../../artifacts/${{ inputs.project }}
-
+          ls -la ../../artifacts/${{ inputs.project }}"
