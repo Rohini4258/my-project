@@ -38,6 +38,7 @@ jobs:
 
       - name: Upload Artifacts to JFrog
         run: |
+          set -x
           if [[ "${{ inputs.project }}" == "ProjectOne" ]]; then
             curl -u "rohini4258@gmail.com:${{ secrets.JFROG_API_KEY }}" \
             -T ../../artifacts/${{ inputs.project }}/${{ inputs.project }}-${{ env.timestamp }}.dll \
