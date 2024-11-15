@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-maven-app
+  labels:
+    app: my-maven-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-maven-app
+  template:
+    metadata:
+      labels:
+        app: my-maven-app
+    spec:
+      containers:
+      - name: my-maven-app
+        image: <ECR_REPO_URI>:latest  # Placeholder for your ECR repository URI
+        ports:
+        - containerPort: 8080
+
